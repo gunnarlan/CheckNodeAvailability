@@ -1,6 +1,5 @@
 package com.example.checknodeavailability
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.jcraft.jsch.JSchException
@@ -10,6 +9,7 @@ import android.os.AsyncTask
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -21,10 +21,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val usernameField = findViewById<EditText>(R.id.username)
-        val IPAddressField = findViewById<EditText>(R.id.ipAddress)
-        val passwordField = findViewById<EditText>(R.id.password)
-        val fileOutputStream:FileOutputStream
+        val textview_username = username
+        val textview_IPaddress = IPaddress
+        val textview_password = password
 
         val filename = "logininfo.txt"
 
@@ -32,21 +31,21 @@ class MainActivity : AppCompatActivity() {
 
         val button = findViewById<Button>(R.id.button)
         button.setOnClickListener {
-            val username = usernameField.getText().toString()
-            val IPAddress = IPAddressField.getText().toString()
-            val password = passwordField.getText().toString()
-            val data = "Username $username\n Password: $password IPAddress: $IPAddress"
+            val username_string = textview_username.text.toString()
+            val IPaddress_string = textview_IPaddress.text.toString()
+            val password_string = textview_password.text.toString()
+            val data = "Username $username_string Password: $password_string IPaddress: $IPaddress_string"
 
             /*
             try {
-                fileOutputStream = openFileOutput(filename, Context.MODE_PRIVATE)
+                val fileOutputStream = openFileOutput(filename, Context.MODE_PRIVATE)
                 fileOutputStream.write(data.toByteArray())
             }catch (e: Exception){
                 e.printStackTrace()
             }
             */
 
-            val command_output = ExecuteSSHCommand(username, password, IPAddress).execute()
+            val command_output = ExecuteSSHCommand(username_string, password_string, IPaddress_string).execute()
             Log.d("MA", "$command_output")
             Log.e("MA", "WORKED!")
         }
