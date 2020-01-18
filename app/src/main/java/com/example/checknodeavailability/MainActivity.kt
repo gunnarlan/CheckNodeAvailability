@@ -8,10 +8,8 @@ import com.jcraft.jsch.JSch
 import android.os.AsyncTask
 import android.util.Log
 import android.widget.Button
-import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.ByteArrayOutputStream
-import java.io.FileOutputStream
 import java.io.InputStream
 import java.lang.Exception
 
@@ -29,8 +27,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val button = findViewById<Button>(R.id.button)
-        button.setOnClickListener {
+        val button_submit_query = button_submit
+        button_submit_query.setOnClickListener {
             val username_string = textview_username.text.toString()
             val IPaddress_string = textview_IPaddress.text.toString()
             val password_string = textview_password.text.toString()
