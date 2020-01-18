@@ -8,30 +8,53 @@ import com.jcraft.jsch.JSch
 import android.os.AsyncTask
 import android.util.Log
 import android.widget.Button
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
-    val user = System.getenv("username") ?: ""
-    val password = System.getenv("password") ?: ""
-    val host = System.getenv("host") ?: ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val button = findViewById<Button>(R.id.button)
-        button.setOnClickListener {
-            ExecuteSSHCommand().execute()
+        val textview_username = username
+        val textview_IPaddress = IPaddress
+        val textview_password = password
+
+        val filename = "logininfo.txt"
+
+
+
+        val button_submit_query = button_submit
+        button_submit_query.setOnClickListener {
+            val username_string = textview_username.text.toString()
+            val IPaddress_string = textview_IPaddress.text.toString()
+            val password_string = textview_password.text.toString()
+            val data = "Username $username_string Password: $password_string IPaddress: $IPaddress_string"
+
+            /*
+            try {
+                val fileOutputStream = openFileOutput(filename, Context.MODE_PRIVATE)
+                fileOutputStream.write(data.toByteArray())
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+            */
+
+            val command_output = ExecuteSSHCommand(username_string, password_string, IPaddress_string).execute()
+            Log.d("MA", "$command_output")
+            Log.e("MA", "WORKED!")
         }
 
     }
 
-    private class ExecuteSSHCommand() : AsyncTask<Void, Void, String>()
+    private class ExecuteSSHCommand(var user: String, var password: String, var host: String) : AsyncTask<Void, Void, String>()
     {
+
+
         override fun doInBackground(vararg params: Void?): String? {
-            
             val port = 22
             try {
                 val baos = ByteArrayOutputStream()
@@ -43,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                 session.connect()
 
                 val channel = session.openChannel("exec") as ChannelExec
-                val command = "ls"
+                val command = "rbusy"
                 channel.setOutputStream(baos)
                 channel.setCommand(command)
                 channel.setInputStream(null)
@@ -82,11 +105,12 @@ class MainActivity : AppCompatActivity() {
 
                 channel.disconnect()
                 session.disconnect()
+                return String(tmp)
+
             } catch (e: JSchException) {
                 Log.e("MainActivity", "${e.printStackTrace()}")
+                return "ERROR"
             }
-            return "Finished"
-
         }
 
         override fun onPostExecute(result: String?) {
